@@ -5,9 +5,9 @@ on:
     #   run_lint:
     #     required: true
     #     type: boolean
-    # secrets:
-    #   PUBLISH_TOKEN:
-    #     required: true
+    secrets:
+      ACCESS_TOKEN:
+        required: true
 
 # env:
 #   NODE_VERSION: 14
@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Dispatch build
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
           MODULE_NAME=$(node -e "console.log(require('./package.json').name)")
           gh workflow run -R bitfocus/companion-module-publisher do-publish.yaml -f moduleName=$MODULE_NAME -f tag=${{ env.GITHUB_REF_NAME }}
