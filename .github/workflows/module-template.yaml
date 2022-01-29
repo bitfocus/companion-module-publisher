@@ -1,10 +1,10 @@
 name: Companion Module Template
 on:
   workflow_call:
-    # inputs:
-    #   run_lint:
-    #     required: true
-    #     type: boolean
+    inputs:
+      tagName:
+        required: true
+        type: string
     secrets:
       ACCESS_TOKEN:
         required: true
@@ -23,7 +23,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
           MODULE_NAME=$(node -e "console.log(require('./package.json').name)")
-          TAG_NAME=${{ env.GITHUB_REF_NAME }}
+          TAG_NAME=${{ inputs.tagName }}
           echo "Running for ${MODULE_NAME}@${TAG_NAME}"
           gh workflow run -R bitfocus/companion-module-publisher do-publish.yaml -f moduleName=$MODULE_NAME -f tag=$TAG_NAME
 
