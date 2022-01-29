@@ -20,29 +20,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        name: Checkout module
         with:
           repository: https://github.com/bitfocus/companion-module-${{ github.event.inputs.moduleName }}
           ref: ${{ github.event.inputs.tag }}
+          path: module
+
+      - name: Verify the release
+        run: |
+          yarn
+          yarn validate ${{ github.event.inputs.moduleName }} ${{ github.event.inputs.tag }}
+
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODE_VERSION }}
-          registry-url: 'https://npm.pkg.github.com'
-          always-auth: true
-          scope: bitfocus
-      # - name: Validate the release
-      #   run: |
-      #     npm install -g semver
-      #     npx zx https://raw.githubusercontent.com/bitfocus/companion-module-bmd-atem/feat/package-publish/validate.mjs
-      - name: Install dependencies
+
+      - name: Install module dependencies
         run: |
+          cd module
           yarn
 
           # fetch the latest type definitions for imports it may rely on
           wget https://raw.githubusercontent.com/bitfocus/companion/master/instance_skel.d.ts -O ../../instance_skel.d.ts
           wget https://raw.githubusercontent.com/bitfocus/companion/master/instance_skel_types.d.ts -O ../../instance_skel_types.d.ts
       - name: Build module
-        run: yarn build
-      # - run: yarn publish --access public
+        run: |
+          cd module
+          yarn build
+
+      # - name: Publish package
+      #   run: |
+      #     cd module
+      #     yarn publish --access public
       #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,0 +1,13 @@
+{
+  "name": "companion-module-publisher",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "validate": "zx validate.mjs"
+  },
+  "dependencies": {
+    "semver": "^7.3.5",
+    "zx": "^4.3.0"
+  }
+}
