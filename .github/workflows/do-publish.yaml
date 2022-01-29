@@ -20,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ${{ github.event.inputs.moduleName }}@${{ github.event.inputs.tag }}
+        run: echo "OK"
       - uses: actions/checkout@v2
       - uses: actions/checkout@v2
         name: Checkout module
