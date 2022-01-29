@@ -32,5 +32,5 @@ jobs:
           TAG_NAME=${{ inputs.tagName }}
 
           npx zx https://raw.githubusercontent.com/bitfocus/companion-module-publisher/main/find-run-id.mjs $MODULE_NAME $TAG_NAME
-          gh run watch --exit-status --interval 10 $(cat RUN_ID)
+          gh run watch -R bitfocus/companion-module-publisher --exit-status --interval 10 $(cat RUN_ID)
         
