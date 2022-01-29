@@ -23,7 +23,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
           MODULE_NAME=$(node -e "console.log(require('./package.json').name)")
-          gh workflow run -R bitfocus/companion-module-publisher do-publish.yaml -f moduleName=$MODULE_NAME -f tag=${{ env.GITHUB_REF_NAME }}
+          TAG_NAME=${{ env.GITHUB_REF_NAME }}
+          echo "Running for ${MODULE_NAME}@${TAG_NAME}"
+          gh workflow run -R bitfocus/companion-module-publisher do-publish.yaml -f moduleName=$MODULE_NAME -f tag=$TAG_NAME
 
   # build:
   #   name: Module Build
