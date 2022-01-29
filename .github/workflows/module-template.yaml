@@ -23,3 +23,8 @@ jobs:
           TAG_NAME=${{ inputs.tagName }}
           echo "Running for ${MODULE_NAME}@${TAG_NAME}"
           gh workflow run -R bitfocus/companion-module-publisher do-publish.yaml -f moduleName=$MODULE_NAME -f tag=$TAG_NAME
+      
+      - name: Wait for completion
+        run: |
+          npx zx https://raw.githubusercontent.com/bitfocus/companion-module-publisher/main/find-run-id.mjs
+          gh run watch --exit-status --interval 10 $(cat RUN_ID)
