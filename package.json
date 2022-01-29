@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "validate": "zx validate.mjs"
+    "validate-and-build": "zx validate-and-build.mjs"
   },
   "dependencies": {
     "semver": "^7.3.5",

@@ -31,3 +31,27 @@ if (!semver.eq(pkgJson.version, tagName)) {
 }
 
 console.log('Looks OK to release')
+
+let scriptName = null
+if (pkgJson.scripts) {
+	// Find the first known build script name
+	const candidateScripts = ['companion:build', 'build']
+	for (const name of candidateScripts) {
+		if (pkgJson.scripts[name]) {
+			scriptName = name
+			break
+		}
+	}
+}
+
+if (scriptName) {
+	console.log('Module needs building')
+	
+	await $`yarn --cwd module install`
+	await $`yarn --cwd module run ${scriptName}`
+
+} else {
+	console.log('Module doesnt need building')
+}
+
+

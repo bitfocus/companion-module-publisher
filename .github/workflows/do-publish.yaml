@@ -27,32 +27,26 @@ jobs:
           ref: ${{ github.event.inputs.tag }}
           path: module
 
-      - name: Verify the release
-        run: |
-          yarn
-          yarn validate ${{ github.event.inputs.moduleName }} ${{ github.event.inputs.tag }}
-
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install module dependencies
+      - name: Prepare environment
         run: |
-          cd module
+          # fetch the latest type definitions for imports it may rely on
+          wget https://raw.githubusercontent.com/bitfocus/companion/master/instance_skel.d.ts -O ../instance_skel.d.ts
+          wget https://raw.githubusercontent.com/bitfocus/companion/master/instance_skel_types.d.ts -O ../instance_skel_types.d.ts
+
           yarn
 
-          # fetch the latest type definitions for imports it may rely on
-          wget https://raw.githubusercontent.com/bitfocus/companion/master/instance_skel.d.ts -O ../../instance_skel.d.ts
-          wget https://raw.githubusercontent.com/bitfocus/companion/master/instance_skel_types.d.ts -O ../../instance_skel_types.d.ts
-      - name: Build module
+      - name: Validate the request and prepare the module
+        run: |
+          yarn validate-and-build ${{ github.event.inputs.moduleName }} ${{ github.event.inputs.tag }}
+
+      - name: Publish package
         run: |
           cd module
-          yarn build
-
-      # - name: Publish package
-      #   run: |
-      #     cd module
-      #     yarn publish --access public
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          yarn publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
