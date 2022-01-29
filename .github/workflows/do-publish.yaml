@@ -1,4 +1,4 @@
-name: Module publish
+name: Module Publish
 on:
   workflow_dispatch:
     inputs:
@@ -15,8 +15,8 @@ env:
   NODE_VERSION: 14
 
 jobs:
-  build:
-    name: Module Build
+  publish:
+    name: Module Publish
     runs-on: ubuntu-latest
     steps:
       - name: ${{ github.event.inputs.moduleName }}@${{ github.event.inputs.tag }}
