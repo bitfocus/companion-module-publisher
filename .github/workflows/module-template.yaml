@@ -26,5 +26,8 @@ jobs:
       
       - name: Wait for completion
         run: |
-          npx zx https://raw.githubusercontent.com/bitfocus/companion-module-publisher/main/find-run-id.mjs
+          MODULE_NAME=$(node -e "console.log(require('./package.json').name.replace(/^(@companion-module\/)/,\"\"))")
+          TAG_NAME=${{ inputs.tagName }}
+
+          npx zx https://raw.githubusercontent.com/bitfocus/companion-module-publisher/main/find-run-id.mjs $MODULE_NAME $TAG_NAME
           gh run watch --exit-status --interval 10 $(cat RUN_ID)
