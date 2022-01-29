@@ -1,7 +1,5 @@
 // #!/usr/bin/env zx
 
-import { fs } from "zx"
-
 const moduleName = argv._[1]
 const tagName = argv._[2]
 const authToken = process.env.GITHUB_TOKEN
