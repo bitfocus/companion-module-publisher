@@ -1,0 +1,48 @@
+name: Module publish
+on:
+  workflow_dispatch:
+    inputs:
+      moduleName:
+        description: 'name of the module repository eg bmd-atem'
+        required: true
+        type: string
+      tag:
+        description: 'The tag name to publish'
+        required: true
+        type: string
+
+env:
+  NODE_VERSION: 14
+
+jobs:
+  build:
+    name: Module Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: https://github.com/bitfocus/companion-module-${{ github.event.inputs.moduleName }}
+          ref: ${{ github.event.inputs.tag }}
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://npm.pkg.github.com'
+          always-auth: true
+          scope: bitfocus
+      # - name: Validate the release
+      #   run: |
+      #     npm install -g semver
+      #     npx zx https://raw.githubusercontent.com/bitfocus/companion-module-bmd-atem/feat/package-publish/validate.mjs
+      - name: Install dependencies
+        run: |
+          yarn
+
+          # fetch the latest type definitions for imports it may rely on
+          wget https://raw.githubusercontent.com/bitfocus/companion/master/instance_skel.d.ts -O ../../instance_skel.d.ts
+          wget https://raw.githubusercontent.com/bitfocus/companion/master/instance_skel_types.d.ts -O ../../instance_skel_types.d.ts
+      - name: Build module
+        run: yarn build
+      # - run: yarn publish --access public
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
